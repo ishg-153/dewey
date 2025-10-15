@@ -146,4 +146,3 @@ print(f"\n🎓 Canvas data pipeline complete!")
 print(f"   ✓ {success_count} file(s) loaded successfully")
 if error_count > 0:
     print(f"   ✗ {error_count} file(s) failed")
-```
