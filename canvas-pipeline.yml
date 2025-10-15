@@ -1,0 +1,35 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: canvas-sql-secrets
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.9'
+  displayName: 'Use Python 3.9'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Install Python dependencies'
+
+- script: |
+    curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+    curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+    sudo apt-get update
+    sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+  displayName: 'Install SQL Server ODBC Driver'
+
+- script: |
+    python canvas_to_sql.py
+  displayName: 'Run Canvas to SQL Database pipeline'
+  env:
+    CANVAS_API_TOKEN: $(CANVAS_API_TOKEN)
+    CANVAS_BASE_URL: $(CANVAS_BASE_URL)
+    CANVAS_COURSE_ID: $(CANVAS_COURSE_ID)
+    SQL_CONNECTION_STRING: $(SQL_CONNECTION_STRING)
