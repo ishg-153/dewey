@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-- group: canvas-sql-secrets
+- group: canvas-dewey-secrets
 
 steps:
 - task: UsePythonVersion@0
